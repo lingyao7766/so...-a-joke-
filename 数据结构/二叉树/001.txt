@@ -1,0 +1,58 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+char *a="ABC##D#E##F##"; //扩充二叉树前序队列
+
+typedef struct node
+{
+    char data;
+    struct node *lchile,*rchile;
+}bintree;
+
+bintree * creatbintree()    //创建二叉树 ，※ 传入的是指向指针的指针 (emmm指向指针的指针的应用)
+{
+    char ch=*a;a=a+1;
+    bintree *t;
+    if(ch=='#') t=NULL;
+    else
+    {
+        t=(bintree*)malloc(sizeof(bintree));
+        t->data = ch;
+        t->lchile = creatbintree();  //制作一棵新的树
+        t->rchile = creatbintree();
+    }
+    return t;  //creat返回的按照前序遍历创建的二叉树 其结果是做了一堆bintree，随着null的增加、t会返回到最开始的时候
+}
+
+void preorder(bintree *t) //前序遍历
+{
+    if(t)   //if t不为空
+    {
+        printf("%c",t->data);
+        preorder(t->lchile);  //指向一棵新的树
+        preorder(t->rchile);
+    }
+}
+void midorder(bintree *t)  //中序遍历
+{
+    if(t)   //if t不为空
+    {
+        midorder(t->lchile);
+        printf("%c",t->data);
+        midorder(t->rchile);
+    }
+}
+void posorder(bintree *t)  //后序遍历
+{
+    if(t)
+    {
+        posorder(t->lchile);
+        posorder(t->rchile);
+        printf("%c",t->data);
+    }
+}
+int main()
+{
+
+    return 0;
+}

@@ -1,0 +1,110 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct node 
+{
+    int data;
+    struct node *next;
+}node;
+
+
+int main()
+{
+    node *p1,*p2;
+    p1=(node *)malloc(sizeof(node));  //分配空间（即开辟一个新节点）
+    (*p1).data=1;  //数据域赋值
+
+    p2=(node *)malloc(sizeof(node));
+    (*p2).data = 2;
+
+    p1->next=p2;
+
+return 0;
+}
+
+
+---------------------
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct node
+{
+    int data;
+    struct node *next;
+}node;
+
+
+int main()
+{
+    node *head;
+    node *p1,*p2;
+    p1=(node *)malloc(sizeof(node));
+    (*p1).data=1;
+
+    p2=(node *)malloc(sizeof(node));
+    (*p2).data = 2;
+
+    p1->next=p2;
+
+    p2->next=NULL;
+
+    head=p1;
+
+return 0;
+}
+
+----------------
+//没有头节点（扶额）
+
+
+利用循环语句并将初始化的链表依次输出:
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct node
+{
+    int data;
+    struct node *next;
+}node;
+
+int main()
+{
+    node *head,*p1,*p2;
+    int i;
+    head =0;
+
+    for(i=1;i<=5;i++)
+    {
+        p1=(node*)malloc(sizeof(node));
+        (*p1).data=i;
+        if(head==0)
+        {
+            head=p1;
+            p2=p1;
+        }
+        else
+        {
+            p2->next=p1;
+            p2=p1;  //总觉得和虫子一样，一爬一爬的（笑）
+        }
+    }
+
+    p2->next=0;
+
+
+    //输出链表数据
+    node *p;
+    p=head;
+    printf("链表上各个结点的数据为：");
+    while(p!=0)
+    {
+        printf("%d",p->data);
+        p=p->next;
+    }
+    printf("\n");
+    return 0;
+}
+
+
