@@ -1,0 +1,104 @@
+ void *memset(void *s,  int c, size_t n); 
+
+
+                                      memset
+
+:作用是在一段内存块中填充某个给定的值，它对较大的结构体或数组进行清零操作的一种最快方法。
+
+常见的三种错误
+
+第一: 搞反了c 和 n的位置. 
+
+一定要记住 如果要把一个char a[20]清零, 一定是 memset(a, 0, 20) 
+而不是 memset(a, 20,  0) 
+
+第二: 过度使用memset, 我想这些程序员可能有某种心理阴影, 他们惧怕未经初始化的内存, 所以他们会写出这样的代码: 
+
+char buffer[20]; 
+
+memset(buffer, 0, sizeof((char)*20)); 
+strcpy(buffer, "123"); 
+
+这里的memset是多余的. 因为这块内存马上就被覆盖了, 清零没有意义. 
+
+第三: 其实这个错误严格来讲不能算用错memset, 但是它经常在使用memset的场合出现 
+
+int some_func(struct something *a){ 
+ … 
+ … 
+ memset(a, 0, sizeof(a)); 
+ … 
+} 
+
+问:为何要用memset置零?memset( &Address, 0, sizeof(Address))；经常看到这样的用法，其实不用的话，分配数据的时候，剩余的空间也会置零的。
+
+答: 1.如果不清空，可能会在测试当中出现野值。 你做下面的试验看看结果() 
+
+char buf[5]； 
+
+CString str,str1； //memset(buf,0,sizeof(buf))； for(int i = 0；i<5；i++) { str.Format(“%d “,buf[i])； str1 +=str ； } TRACE(“%s\r\n“,str1)
+
+
+2.其实不然！特别是对于字符指针类型的，剩余的部分通常是不会为0的，不妨作一个试验，定义一个字符数组，并输入一串字符，如果不用memset实现清零，使用MessageBox显示出来就会有乱码（0表示NULL，如果有，就默认字符结束，不会输出后面的乱码）
+
+
+问:
+
+如下demo是可以的，能把数组中的元素值都设置成字符1，
+#include <iostream>
+#include <cstring>
+using namespace std;
+int main()
+{
+    char a[5];
+    memset(a,'1',5);
+    for(int i = 0;i < 5;i++)
+      cout<<a[i]<<"  ";
+    system("pause");
+    return 0;
+}
+而，如下程序想吧数组中的元素值设置成1，却是不可行的
+#include <iostream>
+#include <cstring>
+using namespace std;
+int main()
+{
+    int a[5];
+    memset(a,1,5);//这里改成memset(a,1,5 *sizeof(int))也是不可以的
+    for(int i = 0;i < 5;i++)
+      cout<<a[i]<<"  ";
+    system("pause");
+    return 0;
+}
+问题是：
+
+1，第一个程序为什么可以，而第二个不行，
+2，不想要用for，或是while循环来初始化int a[5];能做到吗？（有没有一个像memset（）这样的函数初始化）
+
+答:
+
+1.因为第一个程序的数组a是字符型的，字符型占据内存大小是1Byte，而memset函数也是以字节为单位进行赋值的，所以你输出没有问题。而第二个程序a是整型的，使用memset还是按字节赋值，这样赋值完以后，每个数组元素的值实际上是0x01010101即十进制的16843009。你看看你输出结果是否这样？ 
+
+2.如果用memset(a,1,20);
+就是对a指向的内存的20个字节进行赋值，每个都用ASCII为1的字符去填充，转为二进制后，1就是00000001,占一个字节。一个INT元素是4字节，合一起就是1000000010000000100000001，就等于16843009，就完成了对一个INT元素的赋值了。
+
+
+
+
+                                       sizeof() 功能：计算数据空间的字节数
+
+1.与strlen()比较
+        strlen()   计算字符数组的字符数，以"\0"为结束判断，不计算为'\0'的数组元素。
+      而  sizeof   计算数据（包括数组、变量、类型、结构体等）所占内存空间，用字节数表示。
+2.指针与静态数组的sizeof操作
+      指针均可看为变量类型的一种。所有指针变量的sizeof 操作结果均为4。
+注意：int *p; sizeof(p)=4;
+                  但sizeof(*p)相当于sizeof(int);      
+      对于静态数组，sizeof可直接计算数组大小；
+      例：int a[10];char b[]="hello";
+              sizeof(a)等于4*10=40;
+              sizeof(b)等于6;
+ 注意：数组做型参时，数组名称当作指针使用！！
+               void  fun(char p[])
+               {sizeof(p)等于4}    
+

@@ -1,0 +1,300 @@
+I）Sort函数包含在头文件为  #include<algorithm>  的c++标准库中，调用标准库里的排序方法可以不必知道其内部是如何实现的，只要出现我们想要的结果即可。
+
+II）Sort函数有三个参数：
+
+（1）第一个是要排序的数组的起始地址。
+
+（2）第二个是结束的地址（最后一位要排序的地址）
+
+（3）第三个参数是排序的方法，可以是从大到小也可是从小到大，还可以不写第三个参数，此时默认的排序方法是 从小到大 排序。
+
+即：
+       Sort(start,end,排序方法)  
+        【--> 从哪排到哪、怎么排 】
+
+
+例：
+
+#include<iostream>
+
+#include<algorithm>
+
+using namespace std;
+
+int main()
+
+{
+
+ int a[10]={9,6,3,8,5,2,7,4,1,0};
+
+ for(int i=0;i<10;i++)
+
+ cout<<a[i]<<endl;
+
+sort(a,a+10);            // 起始地址→终止地址、默认从小到大
+
+ for(int i=0;i<10;i++)
+
+ cout<<a[i]<<endl;
+
+ return 0;
+
+}
+
+
+通过上面的例子，会产生疑问：要实现从大到小的排序肿么办？
+
+ 这就如前文所说需要在sort（）函数里的第三个参数里做文章了，告诉程序我要从大到小排序！
+
+需要加入一个比较函数 complare(),此函数的实现过程是这样的
+
+bool complare(int a,int b)     //设置布尔变量..此间非常重要
+{
+ return a>b;
+}
+
+
+这就是告诉程序要实现从大到小的排序的方法！
+
+#include<iostream>
+
+#include<algorithm>
+
+using namespace std;
+
+bool complare(int a,int b)
+
+{
+
+ return a>b;
+
+}
+
+int main()
+
+{
+
+ int a[10]={9,6,3,8,5,2,7,4,1,0};
+
+ for(int i=0;i<10;i++)
+
+ cout<<a[i]<<endl;
+
+ sort(a,a+10,complare); //在这里就不需要对complare函数传入参数了，这是规则
+
+ for(int i=0;i<10;i++)    //输出
+
+ cout<<a[i]<<endl;
+
+ return 0;
+
+}
+
+
+
+
+
+
+
+进阶：
+
+
+       形式：sort(first_pointer,first_pointer+n,cmp)
+
+
+参数解释： 第一个参数是数组的首地址，一般写上数组名就可以，因为数组名是一个指针常量。第二个参数相对较好理解，即首地址加上数组的长度n（代表尾地址的下一地址）。最后一个参数是比较函数的名称（自定义函数cmp），这个比较函数可以不写，即第三个参数可以缺省，这样sort会默认按数组升序排序。
+
+简单例子：对数组A的0~n-1元素进行升序排序，只要写sort(A,A+n)即可；对于向量V也一样，sort(v.begin(),v.end())即可。  （根据目前水平，放到数组里即可）
+
+※sort扩展
+关键就在于第三个参数<cmp比较函数>
+
+方法一：定义比较函数（最常用）
+
+//情况一：数组排列
+int A[100];
+bool cmp1(int a,int b)//int为数组数据类型
+{
+    return a>b;//降序排列
+    //return a<b;//默认的升序排列
+}
+sort(A,A+100,cmp1);
+
+//情况二：结构体排序  ※
+Student Stu[100];
+bool cmp2(Student a,Student b)
+{
+    return a.id>b.id;//按照学号降序排列
+    //return a.id<b.id;//按照学号升序排列
+}
+sort(Stu,Stu+100,cmp2);
+
+
+有趣的例子：
+----------
+【改到头皮发麻】
+
+#include <iostream>
+#include <iomanip>
+#include <stdio.h>
+        //以下为↓STL头文件
+#include <string>
+#include <iterator>
+#include <algorithm>
+using namespace std;
+
+struct student
+{
+    string name;
+    int grade_add;
+    int grade_cha;
+    int grade_mat;
+    int grade_eng;
+
+}stu[200];
+
+bool compare(student a,student b)
+{                                                            //注意这东西是可以带判断的
+    if(a.grade_add!=b.grade_add)        //..实际上嵌套 == 更符合正常逻辑？
+    return a.grade_add>b.grade_add;
+    else if(a.grade_cha!=b.grade_cha)
+        return a.grade_cha>b.grade_cha;
+     else if(a.grade_mat!=b.grade_mat)
+        return a.grade_mat>b.grade_mat;
+}
+
+
+main()
+{
+    int n,i;
+    cin>>n;
+    for(i=0;i<n;i++)
+    {
+        cin>>stu[i].name>>stu[i].grade_add>>stu[i].grade_cha>>stu[i].grade_mat>>stu[i].grade_eng;     //输入输出流别搞混了
+    }
+    sort(stu,stu+n,compare);
+    for(i=0;i<n;i++)
+    {
+        cout<<stu[i].name<<" "<<stu[i].grade_add<<" "<<stu[i].grade_cha<<" "<<stu[i].grade_mat<<" "<<stu[i].grade_eng<<endl;   //...换行不是空格（捂额头）
+    }
+    return 0;
+}
+
+【 结构体数组 + compare分支判断 + 输入→换值→输出】 
+
+
+-------------------
+//例题5-1　大理石在哪儿（Where is the Marble？，Uva 10474）
+//现有N个大理石，每个大理石上写了一个非负整数。首先把各数从小到大排序，然后回答Q个问题。
+//*每个问题问是否有一个大理石写着某个整数x，如果是，还要回答哪个大理石上写着x。
+//排序后的大理石从左到右编号为1～N。
+//（在样例中，为了节约篇幅，所有大理石上的数合并到一行，所有问题也合并到一行。）
+
+//样例输入：
+//2 3 5 1
+//5
+//4 1
+//5 2
+//1 3 3 3 1
+//2 3
+//样例输出：
+//CASE #1:
+//5 found at 4
+//CASE #2:
+//2 not found
+//3 found at 3
+
+#include <cstdio>
+#include <iostream>
+#include <algorithm>
+using namespace std;
+const int maxn = 10000;
+
+int main()
+{
+    int n,q,x,a[maxn],kase = 0;
+    while(scanf("%d%d",&n,&q) == 2 && n){
+        printf("CASE# %d:\n",++kase);
+        for(int i=0;i<n;i++) scanf("%d",&a[i]);
+        sort(a,a+n); //排序  三个空分别是 起始位置,终止位置,排序方式
+        while(q--){
+            scanf("%d",&x);
+            int p = lower_bound(a,a+n,x)-a; //在已排序数组a中寻找x
+            if(a[p]==x)printf("%d found at %d\n",x,p+1);
+            else printf("%d not found\n",x);
+        }
+    }
+    return 0;
+}
+
+//lower_bound返回大于或等于val的第一个元素位置
+//lower_bound需要与sort结合
+
+//sort格式三个空分别是 起始位置,终止位置,排序方式，最后一个空可省略，默认从小到大(升序)
+
+
+
+
+---------------（以下目前能力不适合看）
+
+
+
+方法二：使用标准库函数
+
+另外，其实我们还可以再懒一点，在标准库中已经有现成的。它在哪呢？答案是functional，我们include进来试试看。functional提供了一堆基于模板的比较函数对象，它们是：equal_to<Type>、not_equal_to<Type>、greater<Type>、greater_equal<Type>、less<Type>、less_equal<Type>。这些东西的用法看名字就知道了。在这里，我么sort要用到的也只是greater和less就足够了，用法如下：
+
+升序：sort(begin,end,less<data-type>())
+降序：sort(begin,end,greater<data-type>())
+缺点：也只是实现简单的排序，结构体不适用。
+
+复制代码
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+#include <functional>
+
+using namespace std;
+//简单使用方法
+sort(A,A+100,greater<int>());//降序排列
+sort(A,A+100,less<int>());//升序排列
+复制代码
+方法三：重载结构体或类的比较运算符
+
+复制代码
+//情况一：在结构体内部重载
+typedef struct Student{
+    int id;
+    string name;
+    double grade;
+
+    bool operator<(const Student& s)
+    {
+        return id>s.id;//降序排列
+        //return id<s.id;//升序排列
+    }
+};
+vector<Student> V;
+sort(V.begin(),V.end());
+
+//情况二：在外部重载
+vector<Student> V;
+bool operator<(const Student& s1, const Student& s2)
+{
+    return s1.id>s2.id;//降序排列
+    //return s1.id<s2.id;//升序排列
+}
+sort(V.begin(),V.end());
+复制代码
+注意：一定要重载<运算符，因为系统默认是降序，用的是<运算符。
+
+方法四：声明比较类（少用）
+
+复制代码
+struct Less
+{
+    bool operator()(const Student& s1, const Student& s2)
+    {
+        return s1.id<s2.id; //升序排列
+    }
+};
+sort(sutVector.begin(),stuVector.end(),Less());

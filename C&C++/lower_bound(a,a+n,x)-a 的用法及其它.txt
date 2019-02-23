@@ -1,0 +1,58 @@
+※调用lower_bound之前必须确定序列为有序序列，否则调用出错
+函数lower_bound()在first和last中的前闭后开区间进行二分查找，返回大于或等于val的第一个元素位置。如果所有元素都小于val，则返回last的位置，是查找序列中的第一个出现的值大于等于val的位置；   
+
+简单来说 ：
+ lower_bound()返回值是一个迭代器,返回指向比key大或与key相等的第一个值的位置。		 格式：【	lower_bound(起始位置 , 结束位置 , key)-a   】
+
+例1：
+
+#include <algorithm>
+
+#include <iostream>
+
+using namespace std;
+
+int main()
+
+{
+	
+	int a[]={1,2,3,4,5,7,8,9};
+	
+	printf("%d",lower_bound(a,a+8,6)-a);
+return 0;
+}
+输出：5          ※注意是位置
+
+------
+例2：
+#include <algorithm>
+#include <iostream>
+using namespace std;
+int main()
+{
+	int a[]={1,2,3,4,5,7,8,9};
+	printf("%d",lower_bound(a,a+8,10)-a); 
+	
+ return 0;	
+} 
+输出：8
+
+总结： 这是一个综合了sort找特定数（key）非常方便的东西
+
+
+
+补充：
+	max_element 和 min_element
+
+【 position=max_element(a,a+n)-a;  】 
+	指找到的最大元素的位置在哪里，position代表位置 
+
+【 position=min_element(a,a+n)-a;  】 
+	同上指找到的最小元素的位置在哪里，position代表位置 
+
+像这样可以直接输出：
+【 printf("%d\n",*max_element(a,a+n)); 】
+【 printf("%d\n",*min_element(a,a+n)); 】
+
+
+

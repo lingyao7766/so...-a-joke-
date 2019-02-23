@@ -1,0 +1,59 @@
+首先可以综合sort使用lower_bound()  （见lower_bound的笔记）
+
+其它的详见
+https://www.cnblogs.com/me115/p/4564709.html
+
+这里是搬运
+
+《effective STL》中有句忠告，尽量用算法替代手写循环；查找少不了循环遍历，在这里总结下常用的STL查找算法；
+
+点就是查找目标为单个元素； 
+线就是查找目标为区间； 
+面就是查找目标为集合；
+
+
+点：
+
+find() 比较条件为相等的查找 
+实例：从myvector中查找30：
+int myints[] = { 10, 20, 30, 40 };
+std::vector<int> myvector (myints,myints+4);
+it = find (myvector.begin(), myvector.end(), 30);
+if (it != myvector.end())
+    std::cout << "Element found in myvector: " << *it << '\n';
+else
+    std::cout << "Element not found in myvector\n";
+
+
+find_if() 自定义比较函数
+std::find_if():从给定区间中找出满足比较函数的第一个元素； 
+示例,从myvector中查找能够被30整除的第一个元素：
+bool cmpFunction (int i) {
+  return ((i%30)==0);
+}
+it = std::find_if (myvector.begin(), myvector.end(), cmpFunction);
+std::cout << "first:" <<  *it <<std::endl;
+
+
+search_n() 查询单个元素重复出现的位置
+search_n(): find用来查询单个元素，search_n则用来查找区间中重复出现n次的元素；
+示例：查询myvector中30连续出现2次的位置：
+int myints[]={10,20,30,30,20,10,10,20};
+std::vector<int> myvector (myints,myints+8);
+it = std::search_n (myvector.begin(), myvector.end(), 2, 30);
+
+
+示例：从有序区间v中找3是否存在：
+
+int myints[] = {1,2,3,4,5,4,3,2,1};
+std::vector<int> v(myints,myints+9);                         // 1 2 3 4 5 4 3 2 1
+std::sort (v.begin(), v.end());
+if (std::binary_search (v.begin(), v.end(), 3))
+    std::cout << "found!\n"; else std::cout << "not found.\n";
+
+
+min_element() 查找最小元素
+min_element() 在给定区间中查找出最小值;
+int myints[] = {3,7,2,5,6,4,9};
+std::cout << "The smallest element is " << *std::min_element(myints,myints+7) << '\n';
+类似算法有：max_element() 查找最大值；
