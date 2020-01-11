@@ -1,0 +1,192 @@
+资料来源于 https://blog.csdn.net/sunshineacm/article/details/78068987   
+ https://blog.csdn.net/fanyun_01/article/details/66967710  
+ https://www.cnblogs.com/qingsiburan/p/3858680.html  
+ https://www.cnblogs.com/gamesky/archive/2013/01/09/2852356.html
+
+注：流:“流”(stream)想表达的是，随着时间的推移，字符串是顺序生成或消耗的。
+
+sstream头文件即基于字符串的I/O 
+
+大致分为三种类型：
+1. istringstream从string对象中读取（从流中提取数据，支持>>），由istream派生
+2. ostringstream写到string对象中去（往流中写入数据，支持<<），由ostream派生
+3. stringstream对string对象进行读写（对上二者的综合，支持>>,<<），由iostream派生
+
+
+//ostringstream感觉好像不常用...？
+
+
+
+
+
+
+
+感觉stringstream就像一个盒子。
+可以进行缓冲 或转换
+
+
+缓冲举例：
+#include <iostream>
+#include <string>
+#include <sstream>
+using namespace std;
+
+int main()
+{
+    string line;
+    while(getline(cin,line)){
+        int sum = 0 ,x;
+        stringstream ss(line);   //用getline读取的一行数据创建一个“字符串流” SS 。
+        while(ss >> x) sum += x;   //ss 这里作用相当于cin 、ss转int
+        cout<<sum<<"\n";
+    }
+    return 0;
+}
+----
+转换举例： (stringstream通常是用来做数据转换的)
+
+                                               int转string
+#include <string>
+#include <sstream>
+#include <iostream> 
+
+int main()
+{
+    std::stringstream stream;
+    std::string result;
+    int i = 1000;
+    stream << i; //将int输入流
+    stream >> result; //从stream中抽取前面插入的int值
+    std::cout << result << std::endl; // print the string "1000"
+} 
+//相比c库的转换，它更加安全，自动和直接。
+-----
+                                 除了基本类型的转换，也支持char *的转换
+#include <sstream>
+#include <iostream> 
+
+int main()
+{
+    std::stringstream stream;
+    char result[8] ; 
+    stream << 8888; //向stream中插入8888
+    stream >> result; //抽取stream中的值到result
+    std::cout << result << std::endl; // 屏幕显示 "8888"
+} 
+-----
+                  再进行多次转换的时候，必须调用stringstream的成员函数clear()
+#include <sstream>
+#include <iostream>
+int main()
+{
+    std::stringstream stream;
+    int first, second;
+    stream<< "456"; //插入字符串
+    stream >> first; //转换成int
+    std::cout << first << std::endl;
+    stream.clear(); //在进行多次转换前，必须清除stream    ※
+    stream << true; //插入bool值
+    stream >> second; //提取出int
+    std::cout << second << std::endl;
+} 
+-----
+	特注、stringstrea中的.clear()与.str()
+ 
+clear清空的的是标志位！！
+
+clear()之后，虽然结果正确了，但是stream占用的内存却没有释放！！！在我们的小测试中虽然不会有什么问题，但是在实际的应用中，要是多次使用stringstream，每次都增加占用的内存，那么显然是会有问题的
+
+正确用法：
+#include <cstdlib>
+#include <iostream>
+#include <sstream> 
+
+using namespace std; 
+
+int main(int argc, char * argv[])
+{
+    stringstream stream;
+    int a,b;
+
+    stream<<"80";
+    stream>>a;
+    cout<<"Size of stream = "<<stream.str().length()<<endl;
+
+    stream.clear();	     ※ 这里这里
+    stream.str("");            ※ 这里这里
+
+    cout<<"Size of stream = "<<stream.str().length()<<endl;
+
+    stream<<"90";
+    stream>>b;
+    
+    cout<<"Size of stream = "<<stream.str().length()<<endl;
+
+    cout<<a<<endl;
+    cout<<b<<endl;
+
+    system("PAUSE ");
+    return  EXIT_SUCCESS;
+} 
+
+
+
+
+
+
+--------------2019.2.2补充
+
+
+istringstream的构造函数原形如下：
+
+istringstream::istringstream(string str);
+
+
+它的作用是从string对象str中读取字符。
+
+ （以空格为分隔符把该行分隔开来。不分空格多少）
+#include<iostream>  
+
+#include<sstream>        //istringstream 必须包含这个头文件
+
+#include<string>  
+
+using namespace std;  
+
+int main()  
+
+{  
+    string str="i   am        a boy";
+  
+     istringstream is(str); 
+ 
+      string s;
+  
+     while(is>>s)  
+    {  cout<<s<<endl;  
+  }  
+      
+} 
+
+
+输出是:
+
+
+i
+
+
+am
+
+
+a
+
+
+boy
+------------
+stringstream与istringstream的区别：
+
+我个人觉得很少流入和流出同一字符串流。
+通常我想从一个字符串初始化一个流，然后解析它;
+so ......
+（用istringstream）
+

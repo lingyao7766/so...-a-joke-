@@ -1,0 +1,59 @@
+※其实在C中，stuct node 才相当于一个数据类型，如int，这可能会使初学者感到理解困难。
+在定义一个变量时，要用struct node xxx而不是node xxx   （关键）
+
+node的意义只是“相当于一个结构体类型”；
+
+typedef 是自定义数据类型。
+如：typedef int zengshu // 把一个数据类型用一个直观的数据类型名代替，增加程序的可移植性。 
+而且 typedef struct node { 
+}A;
+则是把 struct node 看做一个数据类型（见关键处），不同的是这个结构体类型的定义也放在后面。 而A则是那个直观的数据类型名，引用的时候更加方便。 
+
+
+至于struct和typdefe struct 的区别，请看www.cnblogs.com/qyaizs/articles/2039101.html
+
+
+
+
+结构体中 .和->两种访问的区别：
+
+定义结构体指针，访问成员时就用 -> 
+定义结构体变量，访问成员时就用 .
+
+如：
+struct A
+{
+int a;
+char b;
+};
+
+若是  struct A q;  访问成员就用 q.a；
+若是  struct A*p;  访问成员就用 p->a;
+
+原因？
+emm
+一般来说，可能是因为 a->b 写起来比 (*a).b 简单一些？
+
+
+通常我们把链表画成用箭头相连的结点的序列，结点之间的箭头表示链域（指针域）间的指针。这是因为在使用链表时，关心的只是它所表示的线性表中数据元素之间的逻辑顺序而不是每个元素在存储器中的实际位置。
+
+※※※
+p是一个指针变量的名字，表示此指针变量指向的 内存地址 ，如果使用%p来输出的话，它将是一个16进制数。
+*p表示此指针指向的内存地址中存放的 内容 ，一般是一个和指针类型一致的变量或者常量。
+
+    pInt = &para;
+    printf("指针变量pInt自己的值是:  0X%x\n", pInt);    【地址】（这里是para的地址）
+    printf("指针变量pInt的他值是:  0X%x\n", *pInt); 	【（指向的）内容】（这里将会与para相同）
+ 
+
+※不带星号是地址，带上星号是内容。※（别记反了）
+
+
+http://www.runoob.com/w3cnote/c-pointer-detail.html
+http://www.runoob.com/w3cnote/c-language-pointer-from-five-dimensions.html
+用来保存 指针 的变量，就是指针变量。如果指针变量p1保存了变量 num的地址，则就说：p1指向了变量num，也可以说p1指向了num所在的内存块 ，这种指向关系，在图中一般用 箭头表示。
+
+
+p1 = (node *)malloc(sizeof(node)); //()malloc()函数作用是申请内存空间，前面放着的是要申请的
+
+free(p1);   //free()用作释放申请的内存

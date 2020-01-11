@@ -1,0 +1,44 @@
+//原网页：https://blog.csdn.net/CLHugh/article/details/75000104 --
+
+以Student类为例，在Python中，定义类如下：
+
+
+class Student(object):
+    
+pass
+
+
+
+（Object）表示该类从哪个类继承下来的，Object类是所有类都会继承的类。
+
+
+-------------------------------------------
+实例：定义好了类，就可以通过Student类创建出Student的实例，创建实例是通过类名+()实现：
+
+student = Student()
+-------------------------------------------
+    由于类可以起到模板的作用，因此，可以在创建实例的时候，把一些我们认为必须绑定的属性强制填写进去。以学生类为例，通过定义一个特殊的__init__方法，在创建实例的时候，就把 name，score 等属性绑上去：
+
+
+class Student(object):
+
+
+
+def __init__(self, name, score):
+
+    self.name = name
+
+    self.score = score
+
+这里注意：（1）、__init__方法的第一参数永远是self，表示 创建的类实例本身 ，因此，在__init__方法内部，就可以把各种属性绑定到self，因为 self就指向创建的实例本身 。
+
+（2）、有了__init__方法，在创建实例的时候，就不能传入空的参数了，必须传入与__init__方法匹配的参数，但self不需要传，Python解释器会自己把实例变量传进去：
+
+>>>student = Student("Hugh", 99)
+>>>student.name
+"Hugh"
+>>>student.score
+99
+
+※这里self就是指类本身，self.name就是Student类的属性变量，是Student类所有。而name是外部传来的参数，不是Student类所自带的。
+故，self.name = name的意思就是把外部传来的参数name的值赋值给Student类自己的属性变量self.name。

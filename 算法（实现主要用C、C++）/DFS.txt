@@ -1,0 +1,123 @@
+深度优先搜索(DFS)详解
+2015年09月30日 16:14:03
+阅读数：4893
+深度优先搜索是一种怎样的方法？
+深度优先搜索所使用的策略就如其名字一样，只要可能，就在图中尽量的深入。深度优先搜素总是对最近才发现的结点v的出发边进行探索，直到该结点的所有出发边都被发现为止。一旦结点v的所有出发边都被发现，搜索则回溯到v的前驱结点(v是经过该点才被发现的)，来探索该前驱结点的出发边。该过程一直持续到从源结点可以到达的所有结点都被发现为止。如果还存在尚未发现的结点，则深度优先搜索将从这些未被发现的结点中任选一个作为新的源节点，并重复同样的搜索过程(此段话摘自算法导论)
+
+
+深度优先搜索的伪代码
+首先需要说明的是：深度优先搜索的过程中对结点的状态进行涂色来指明结点的状态，每个节点的额初始状态都是白色，被发现后变成灰色，当其所有的邻接结点被扫描完成后变为黑色。
+遍历图中所有的结点u{
+u.color=white
+u.π=null
+}
+遍历所有图中所有的点u{
+if(u.color==white){
+dfs(G,u)//以图G中的u结点为源节点进行深度搜索
+}
+}
+dfs(G,u){
+u.color=gray;
+遍历u的每一个邻接结点v{
+if(v.color==white){
+v.color=gray
+v.π=u//表示v的父节点是u，在需要输出搜索路径时有用
+}
+}
+u.color=black
+}
+上面伪代码描述的过程可以用下图表示
+
+从上面的分析可以看出，我们这里只有白色的结点可以访问，但是在大多数情况下黑色结点也是可以访问的。具体还需要根据题目情况具体分析，例如题目要我们找出迷宫G中从起点S到终点D的路径数，这种情况下黑色结点是必须要访问的，若题目要我们求出是否存在从A到D的路径，这种情况黑色结点可以不考虑。
+关于DFS的原理及策略分析就是上面这些内容，下面将讲解两个DFS模板：递归实现DFS、非递归实现DFS
+
+递归实现DFS
+
+[java] view plain copy
+class Main  
+{  
+      
+    enum Color  
+    {  
+        white,gray,black;  
+    }  
+  
+    class Node  
+    {  
+        List<Node> adjNodesList;  
+        Color color;  
+    }  
+    /** 
+     * 递归实现dfs 
+     * @param u 
+     */  
+    void DFS(Node u)  
+    {  
+        u.color=Color.gray;  
+        for(Node v : u.adjNodesList)  
+        {  
+            if(v.color==Color.white)//或者是(v.color==Color.white || v.colir==black),视题目情形而定  
+            {  
+                v.color=Color.gray;  
+                DFS(v);  
+            }  
+        }  
+        u.color=Color.black;  
+    }  
+
+非递归实现DFS
+[java] view plain copy
+package com.solo.dfs;  
+  
+import java.util.List;  
+import java.util.Queue;  
+import java.util.Stack;  
+  
+  
+class Main  
+{  
+      
+    enum Color  
+    {  
+        white,gray,black;  
+    }  
+  
+    class Node  
+    {  
+        Queue<Node> adjNodes;//结点的邻居结点,不能用for遍历  
+        List<Node> adjNodesList;  
+        Color color;  
+    }  
+      
+    /** 
+     * 非递归实现dfs 
+     * @param u：起始结点 
+     */  
+    void dfs(Node u)  
+    {  
+        Stack<Node> stack=new Stack<Node>();  
+        Node v;  
+        u.color=Color.gray;  
+        stack.push(u);  
+        while (!stack.isEmpty())  
+        {  
+            u=stack.peek();  
+            v=u.adjNodes.poll();  
+            if(v==null)  
+            {  
+                u.color=Color.black;  
+                stack.pop();  
+            }  
+            else {  
+                if(v.color==Color.white)//是否可以访问黑色视题目情况而定  
+                {  
+                    v.color=Color.gray;  
+                    stack.push(v);  
+                  
+                }  
+            }  
+        }  
+    }  
+}  
+以上两段代码都给的比较抽象，但是只有抽象的东西才能更好的概括问题，所以好好领悟吧！
+对于这两个模板的运用可以参考文章poj1780

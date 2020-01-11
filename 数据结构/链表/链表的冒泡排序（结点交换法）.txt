@@ -1,0 +1,61 @@
+void LinkList::bubbleSort() 
+{
+
+    if (!head->next)
+   {
+    cout << "该链表无节点！" << endl;
+
+        return;
+
+    }
+
+    Node* pre = head;    //第一个节点的前驱为头节点
+
+    Node* mid = pre->next, *after,*afterPre,*temp;//指向第一个节点，声明内循环中要用的指针
+
+    while (mid)
+ {           //外循环开始
+
+        after = mid->next;  //冒泡第二种形式的思想，让外循环的一个节点与剩余的所有节点一 一比较
+
+        afterPre = mid;     //该节点的前驱指针，方便我们进行交换
+
+        while (after) {     //内循环开始
+
+            if (mid->value > after->value) {  //若节点的值小于外循环中要比较的节点，则交换位置
+
+                afterPre->next = mid;
+       
+         pre->next = after;         //首先让这两个节点的前驱变了
+
+                temp = mid->next;         //保留外循环中要比较的节点的后继，方便交换过来的节点正确的接上
+
+                mid->next = after->next;  //接上交换过来的后继位置
+
+                after->next = temp;      //接上交换过来的后继位置
+
+                temp = mid;       //mid 和 after 所指向的节点在 链表中已交换位置，所以mid和after指针的地址交换一下，思考为什么？
+
+                mid = after;     //
+
+                after = mid;    //答案：因为需要将mid和after的指针的值交换一下，这样才能继续以mid所指向的节点当作外循环的基准节点
+
+                               //after才能正确作为内循环要移动并比较的节点指针，你可以自己敲代码或者画图加深理解
+
+              }
+
+               afterPre = after;
+   
+            after = after->next;  //因为要拿下一个节点与外循环的节点比较，所以要后移前驱和本身
+
+             }
+
+         pre = mid;
+ 
+        mid = mid->next;  //本次内循环已选出最小值，所以外循环需要后移一步，继续开始下一轮的内循环遍历
+}
+--------------------- 
+作者：Special__Yang 
+来源：CSDN 
+原文：https://blog.csdn.net/dawn_after_dark/article/details/73719032 
+版权声明：本文为博主原创文章，转载请附上博文链接！

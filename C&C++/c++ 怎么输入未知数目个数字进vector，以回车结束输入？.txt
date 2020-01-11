@@ -1,0 +1,49 @@
+“c++ 怎么输入未知数目个数字进vector，以回车结束输入？”
+
+这个问题来自一个准确的问题，但事实上它可能的用处十分的广泛并且基础；
+
+问题的本意是“一行double带小数点的数字，不定项数量，每个数字之间用不定项个空格隔开，以回车结束输入，放进一个vector里。”
+比如这样：    1.1 2.2 3.3          4.4     5.5          回车
+
+
+给出的解决方案：
+
+方法一，可以分多行输入，每行不限个数，自动忽略输入中的空白符（空行、空格、制表符）。
+
+std::vector<double> v;
+for (double d; std::cin >> d; v.push_back(d)) {}
+----------------
+方法二，仅输入一行，自动忽略输入中的空白符（空行、空格、制表符）。
+
+#include <sstream>
+std::vector<double> v;
+std::string line;
+std::getline(std::cin, line);
+std::istringstream iss(line);
+for (double d; iss >> d; v.push_back(d)) {}
+----------------------
+方法三，效果同方法一。
+
+#include <iterator>
+std::istream_iterator<double> in(std::cin), eof;
+std::vector<double> v(in, eof);
+------------------------
+注：把上述方法中的std::cin换成任一std::istream类型的变量或其子类的变量效果相同。例如换成std::ifstream类型的变量即可读取文件。
+
+//
+
+但我们只需要的是第二种方法（用回车来结束、并且忽略所有的空格和制表符）
+
+#include <sstrem>  //关于sstream的笔记
+using namespace std  //这样就不用码那么多了...
+
+ vector<double> v;   //先做一个名为v的容器(vector)
+ string line;  //和一个名为line的字符串(string)
+ getline(cin,line);  //getline一行line
+ istringstream iss(line);  //istringstream对象可以绑定一行字符串，然后以空格为分隔符把该行分隔开来。 
+ for(double d; iss>>d; v.push_back(d)) { }  //C++浓缩出精髓的for用法..
+相当于：
+/* double d;
+    while(iss >> d)  { v.push_back(d) }  */0
+
+当然我觉得for这么用还是相当好看的，而且高级。
